@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Vue: Цветные прямоугольники</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(145deg, #f5f7fc 0%, #e9eef4 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 24px;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(2px);
+            border-radius: 2.5rem;
+            padding: 2rem 2rem 2rem 2rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+
+        h1 {
+            font-size: 1.85rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+            color: #1a2c3e;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        h1 small {
+            font-size: 0.8rem;
+            font-weight: 400;
+            background: #2c3e50;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 60px;
+            letter-spacing: normal;
+        }
+
+        .sub {
+            color: #4a627a;
+            border-left: 4px solid #7c8ea0;
+            padding-left: 16px;
+            margin: 8px 0 32px 0;
+            font-weight: 450;
+            font-size: 0.95rem;
+        }
+
+        .colors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.75rem;
+            margin: 2rem 0 1rem;
+        }
+
+        .color-card {
+            background: white;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 12px 22px -10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            backdrop-filter: blur(2px);
+        }
+
+        .color-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 22px 30px -12px rgba(0, 0, 0, 0.2);
+        }
+
+        .color-block {
+            width: 100%;
+            height: 160px;
+            transition: background-color 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        .color-info {
+            padding: 1rem 0.8rem;
+            background: #ffffffdd;
+            backdrop-filter: blur(4px);
+            text-align: center;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .color-name {
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: capitalize;
+            letter-spacing: 0.3px;
+            color: #1e2f3d;
+        }
+
+        .color-value {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.75rem;
+            background: #f0f2f5;
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 30px;
+            margin-top: 8px;
+            color: #2c3e50;
+        }
+
+        .reset-btn {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        button {
+            background: #1e2f3d;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(4px);
+        }
+
+        button:hover {
+            background: #2c4258;
+            transform: scale(0.97);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e2f3dee;
+            backdrop-filter: blur(12px);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            pointer-events: none;
+            z-index: 1000;
+            transition: opacity 0.2s;
+            opacity: 0;
+        }
+
+        @media (max-width: 640px) {
+            .app-container {
+                padding: 1.5rem;
+            }
+            .color-block {
+                height: 130px;
+            }
+            .colors-grid {
+                gap: 1rem;
+            }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.7rem;
+            color: #6c819a;
+        }
+    </style>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <div class="app-container">
+        <h1>
+            🎨 Цветная палитра
+            <small>кликабельные блоки</small>
+        </h1>
+        <div class="sub">
+            ▼ Нажми на любой прямоугольник — его цвет станет случайным.
+        </div>
+
+        <div class="colors-grid">
+            <div v-for="(item, idx) in colorItems" :key="item.id" class="color-card" @click="changeRandomColor(idx)">
+                <div class="color-block" :style="{ backgroundColor: item.currentColor }"></div>
+                <div class="color-info">
+                    <div class="color-name">{{ item.displayName }}</div>
+                    <div class="color-value">{{ item.currentColor }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reset-btn">
+            <button @click="resetToOriginal">
+                🔄 Сбросить все цвета
+            </button>
+        </div>
+        <footer>
+            ⚡ случайный цвет = любой шестнадцатеричный RGB
+        </footer>
+    </div>
+    <div class="toast-msg" :style="{ opacity: toastVisible ? 0.95 : 0 }">
+        {{ toastMessage }}
+    </div>
+</div>
+
+<script>
+    const { createApp } = Vue;
+
+    const App = {
+        data() {
+            return {
+                colorItems: [],
+                toastVisible: false,
+                toastTimer: null,
+                toastMessage: '🎲 Цвет изменён!'
+            };
+        },
+        mounted() {
+            this.initializeColors();
+        },
+        methods: {
+            initializeColors() {
+                const baseColors = ['red', 'green', 'blue', 'yellow', 'purple'];
+                const strictColorMap = {
+                    red: '#FF0000',
+                    green: '#00FF00',
+                    blue: '#0000FF',
+                    yellow: '#FFFF00',
+                    purple: '#800080'
+                };
+                this.colorItems = baseColors.map((colorName, idx) => ({
+                    id: `color-${idx}-${Date.now()}-${Math.random()}`,
+                    originalName: colorName,
+                    displayName: colorName.charAt(0).toUpperCase() + colorName.slice(1),
+                    currentColor: strictColorMap[colorName]
+                }));
+            },
+            getRandomHex() {
+                const letters = '0123456789ABCDEF';
+                let hex = '#';
+                for (let i = 0; i < 6; i++) {
+                    hex += letters[Math.floor(Math.random() * 16)];
+                }
+                return hex;
+            },
+            changeRandomColor(index) {
+                if (!this.colorItems[index]) return;
+                const newColor = this.getRandomHex();
+                this.colorItems[index].currentColor = newColor;
+                this.showToast('🎲 Цвет изменён!');
+            },
+            resetToOriginal() {
+                const strictColorMap = {
+                    red: '#FF0000',
+                    green: '#00FF00',
+                    blue: '#0000FF',
+                    yellow: '#FFFF00',
+                    purple: '#800080'
+                };
+                this.colorItems = this.colorItems.map(item => ({
+                    ...item,
+                    currentColor: strictColorMap[item.originalName]
+                }));
+                this.showToast('🌿 Все цвета сброшены к исходным');
+            },
+            showToast(msg) {
+                if (this.toastTimer) clearTimeout(this.toastTimer);
+                this.toastMessage = msg;
+                this.toastVisible = true;
+                this.toastTimer = setTimeout(() => {
+                    this.toastVisible = false;
+                }, 1000);
+            }
+        }
+    };
+
+    const vueApp = createApp(App);
+    vueApp.mount('#app');
+</script>
+</body>
+</html>
