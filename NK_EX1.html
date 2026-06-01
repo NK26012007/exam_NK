@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Форма профиля исследователя | Клишевой Никита</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #e9f0f5 0%, #d9e2ec 100%);
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      padding: 2rem 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form-card {
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 2rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      transition: transform 0.2s ease;
+    }
+
+    .form-card:hover {
+      transform: scale(1.01);
+    }
+
+    .form-header {
+      background: #1e2f3e;
+      padding: 1.5rem 2rem;
+      border-bottom: 4px solid #3b82f6;
+    }
+
+    .form-header h1 {
+      color: white;
+      font-weight: 600;
+      font-size: 1.7rem;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-header h1::before {
+      content: "✍️";
+      font-size: 1.7rem;
+      font-weight: normal;
+    }
+
+    .form-header p {
+      color: #b9d0e6;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .form-body {
+      padding: 2rem 2rem 2.2rem;
+    }
+
+    .field-group {
+      margin-bottom: 1.8rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .field-group label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #1f2e3a;
+      margin-bottom: 0.45rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .field-group label .required-star {
+      color: #e53e3e;
+      font-size: 1.1rem;
+      margin-left: 2px;
+    }
+
+    .field-group label .optional-badge {
+      background: #e2e8f0;
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.15rem 0.5rem;
+      border-radius: 20px;
+      color: #2c3e50;
+      margin-left: 0.6rem;
+    }
+
+    input, textarea {
+      font-family: inherit;
+      border: 1.5px solid #e2edf2;
+      border-radius: 1rem;
+      padding: 0.85rem 1.2rem;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      background-color: #fefefe;
+      color: #0f172a;
+      width: 100%;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 85px;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      background-color: #fff;
+    }
+
+    .hint-example {
+      font-size: 0.7rem;
+      color: #6c7f8c;
+      margin-top: 0.35rem;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hint-example::before {
+      content: "📘";
+      font-size: 0.7rem;
+    }
+
+    .add-name-section {
+      margin-bottom: 1rem;
+    }
+
+    .inline-add {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.4rem;
+    }
+
+    .add-name-input {
+      flex: 2;
+      min-width: 180px;
+    }
+
+    .btn-add {
+      background: #ecfdf5;
+      border: 1.5px solid #10b981;
+      color: #047857;
+      padding: 0.7rem 1.3rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .btn-add:hover {
+      background: #10b981;
+      color: white;
+      border-color: #10b981;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px -8px rgba(16, 185, 129, 0.4);
+    }
+
+    .names-list {
+      margin-top: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      align-items: center;
+    }
+
+    .name-tag {
+      background: #eef2ff;
+      border-radius: 40px;
+      padding: 0.4rem 1rem 0.4rem 1.2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #1e3a8a;
+      border: 1px solid #cbdff2;
+      transition: 0.1s;
+    }
+
+    .remove-name {
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: #6b7280;
+      padding: 0 4px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .remove-name:hover {
+      color: #dc2626;
+      transform: scale(1.1);
+      background: rgba(220, 38, 38, 0.1);
+      border-radius: 50%;
+    }
+
+    .empty-names-msg {
+      font-size: 0.8rem;
+      color: #8ba0ae;
+      font-style: italic;
+      background: #f8fafc;
+      padding: 0.3rem 0.9rem;
+      border-radius: 30px;
+    }
+
+    .primary-name-field {
+      margin-bottom: 1.25rem;
+    }
+
+    .divider-light {
+      height: 1px;
+      background: #e2edf2;
+      margin: 0.8rem 0 1.5rem;
+    }
+
+    .submit-area {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-submit {
+      background: #1e2f3e;
+      border: none;
+      padding: 0.85rem 2rem;
+      border-radius: 3rem;
+      font-weight: 600;
+      font-size: 1rem;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .btn-submit:hover {
+      background: #0f2a38;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .toast-message {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.9);
+      background: #1f2e3a;
+      backdrop-filter: blur(8px);
+      color: white;
+      padding: 0.75rem 1.8rem;
+      border-radius: 60px;
+      font-weight: 500;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      z-index: 1000;
+      white-space: nowrap;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+    }
+
+    .toast-message.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    @media (max-width: 550px) {
+      body {
+        padding: 1rem;
+      }
+      .form-body {
+        padding: 1.5rem;
+      }
+      .inline-add {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .btn-add {
+        justify-content: center;
+      }
+      .toast-message {
+        white-space: normal;
+        text-align: center;
+        max-width: 85vw;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-card">
+  <div class="form-header">
+    <h1>Профиль исследователя</h1>
+    <p>Заполните информацию об учёном / авторе публикаций</p>
+  </div>
+
+  <div class="form-body">
+    <!-- Блок: Имя (основное поле) с примером Клишевой Никита -->
+    <div class="primary-name-field field-group">
+      <label>📌 Имя <span class="required-star">*</span> <span class="optional-badge">основное</span></label>
+      <input type="text" id="primaryFullName" placeholder="Клишевой Никита" value="">
+      <div class="hint-example">Полное имя, как оно указано в статьях — Клишевой Никита</div>
+    </div>
+
+    <!-- Блок: Добавить имя — пример с вариациями -->
+    <div class="field-group">
+      <label>➕ Дополнительные варианты имени</label>
+      <div class="inline-add">
+        <input type="text" id="newAltName" class="add-name-input" placeholder="Например: N. Klishevoy, Nikita Klishevoy" autocomplete="off">
+        <button type="button" id="addNameBtn" class="btn-add">
+          <span>+</span> Добавить имя
+        </button>
+      </div>
+      <div class="hint-example">Укажите альтернативные формы имени (например: Nikita Klishevoy, N. Klishevoy)</div>
+      
+      <div class="names-list" id="namesListContainer">
+        <div class="empty-names-msg">Нет добавленных имён. Нажмите «Добавить имя»</div>
+      </div>
+    </div>
+
+    <div class="divider-light"></div>
+
+    <!-- Место работы — пример: студент Самарского университета им. Королева -->
+    <div class="field-group">
+      <label>🏛️ Место работы <span class="required-star">*</span></label>
+      <input type="text" id="workplace" placeholder="студент Самарского национального исследовательского университета имени Королева" value="">
+      <div class="hint-example">Пример: студент Самарского национального исследовательского университета имени Королева</div>
+    </div>
+
+    <!-- Электронная почта — персонализированный пример -->
+    <div class="field-group">
+      <label>📧 Электронная почта для подтверждения <span class="required-star">*</span></label>
+      <input type="email" id="email" placeholder="nikita.klishevoy@ssau.ru" value="">
+      <div class="hint-example">Пример: nikita.klishevoy@ssau.ru</div>
+    </div>
+
+    <!-- Области интересов — пример, но пользователь вводит свои -->
+    <div class="field-group">
+      <label>🧠 Области интересов <span class="required-star">*</span></label>
+      <textarea id="interests" placeholder="машинное обучение, анализ данных, космическая инженерия"></textarea>
+      <div class="hint-example">Пример: машинное обучение, анализ данных, космическая инженерия</div>
+    </div>
+
+    <!-- Личная страница — VK ссылка Клишевого Никиты -->
+    <div class="field-group">
+      <label>🌐 Личная страница <span class="optional-badge">необязательно</span></label>
+      <input type="url" id="personalUrl" placeholder="https://vk.ru/nikitos_pandos" value="">
+      <div class="hint-example">Пример: https://vk.ru/nikitos_pandos</div>
+    </div>
+
+    <div class="submit-area">
+      <button id="submitBtn" class="btn-submit">✓ Сохранить профиль</button>
+    </div>
+  </div>
+</div>
+
+<div id="toastMsg" class="toast-message">✅ Данные сохранены</div>
+
+<script>
+  const namesContainer = document.getElementById('namesListContainer');
+  const newNameInput = document.getElementById('newAltName');
+  const addNameButton = document.getElementById('addNameBtn');
+  
+  const primaryFullNameInput = document.getElementById('primaryFullName');
+  const workplaceInput = document.getElementById('workplace');
+  const emailInput = document.getElementById('email');
+  const interestsInput = document.getElementById('interests');
+  const personalUrlInput = document.getElementById('personalUrl');
+  
+  function showToast(message, isError = false) {
+    const toast = document.getElementById('toastMsg');
+    toast.textContent = message || (isError ? '⚠️ Ошибка валидации' : '✅ Данные сохранены');
+    if (isError) {
+      toast.style.background = '#b91c1c';
+      toast.style.color = '#fff5f5';
+    } else {
+      toast.style.background = '#1f2e3a';
+      toast.style.color = 'white';
+    }
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => {
+        if (!isError) {
+          toast.style.background = '#1f2e3a';
+        }
+      }, 300);
+    }, 2800);
+  }
+  
+  function getAdditionalNames() {
+    const tags = namesContainer.querySelectorAll('.name-tag');
+    const names = [];
+    tags.forEach(tag => {
+      let rawText = tag.childNodes[0]?.nodeValue?.trim() || '';
+      if (!rawText) {
+        const possibleText = tag.innerText.replace('✕', '').trim();
+        names.push(possibleText);
+      } else {
+        names.push(rawText);
+      }
+    });
+    return names.filter(n => n && n.length > 0);
+  }
+  
+  function refreshNamesList(namesArray) {
+    namesContainer.innerHTML = '';
+    if (!namesArray.length) {
+      const emptyMsg = document.createElement('div');
+      emptyMsg.className = 'empty-names-msg';
+      emptyMsg.innerText = 'Нет добавленных имён. Нажмите «Добавить имя»';
+      namesContainer.appendChild(emptyMsg);
+      return;
+    }
+    namesArray.forEach(name => {
+      const tag = document.createElement('div');
+      tag.className = 'name-tag';
+      tag.setAttribute('data-name', name);
+      const textSpan = document.createTextNode(name);
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'remove-name';
+      removeBtn.innerHTML = '✕';
+      removeBtn.setAttribute('aria-label', 'Удалить');
+      removeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        tag.remove();
+        if (namesContainer.children.length === 0) {
+          const emptyMsgDiv = document.createElement('div');
+          emptyMsgDiv.className = 'empty-names-msg';
+          emptyMsgDiv.innerText = 'Нет добавленных имён. Нажмите «Добавить имя»';
+          namesContainer.appendChild(emptyMsgDiv);
+        }
+        showToast(`Имя "${name}" удалено`, false);
+      });
+      tag.appendChild(textSpan);
+      tag.appendChild(removeBtn);
+      namesContainer.appendChild(tag);
+    });
+  }
+  
+  function addNewName() {
+    let newName = newNameInput.value.trim();
+    if (newName === "") {
+      showToast("Введите имя для добавления", true);
+      return;
+    }
+    let currentNames = getAdditionalNames();
+    if (currentNames.includes(newName)) {
+      showToast(`Имя "${newName}" уже существует в списке`, true);
+      return;
+    }
+    currentNames.push(newName);
+    refreshNamesList(currentNames);
+    newNameInput.value = '';
+    showToast(`Имя "${newName}" добавлено`, false);
+  }
+  
+  function gatherFormData() {
+    const primaryName = primaryFullNameInput.value.trim();
+    const workplace = workplaceInput.value.trim();
+    const email = emailInput.value.trim();
+    const interests = interestsInput.value.trim();
+    const personalPage = personalUrlInput.value.trim();
+    const altNames = getAdditionalNames();
+    
+    const errors = [];
+    if (!primaryName) errors.push("Основное имя");
+    if (!workplace) errors.push("Место работы");
+    if (!email) errors.push("Электронная почта");
+    if (!interests) errors.push("Области интересов");
+    
+    if (errors.length > 0) {
+      showToast(`Заполните обязательные поля: ${errors.join(", ")}`, true);
+      return null;
+    }
+    
+    const emailPattern = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      showToast("Пожалуйста, введите корректный email (пример: name@domain.ru)", true);
+      return null;
+    }
+    
+    if (personalPage !== "") {
+      const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/i;
+      if (!urlPattern.test(personalPage) && !personalPage.startsWith('http')) {
+        showToast("Личная страница: введите корректный URL (http://... или https://...)", true);
+        return null;
+      }
+    }
+    
+    return {
+      primaryFullName: primaryName,
+      alternativeNames: altNames,
+      workplace: workplace,
+      email: email,
+      researchInterests: interests,
+      personalWebsite: personalPage || null,
+      timestamp: new Date().toISOString()
+    };
+  }
+  
+  function handleSubmit() {
+    const formData = gatherFormData();
+    if (!formData) return;
+    
+    console.log("📋 Данные профиля исследователя (Клишевой Никита):", formData);
+    try {
+      localStorage.setItem('researcherProfile', JSON.stringify(formData, null, 2));
+    } catch(e) {}
+    
+    const altCount = formData.alternativeNames.length;
+    let altStr = altCount ? ` (доп. имена: ${formData.alternativeNames.join(", ")})` : "";
+    showToast(`Профиль сохранён: ${formData.primaryFullName}${altStr}`, false);
+  }
+  
+  addNameButton.addEventListener('click', addNewName);
+  document.getElementById('submitBtn').addEventListener('click', handleSubmit);
+  
+  newNameInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addNewName();
+    }
+  });
+  
+  const formInputs = [primaryFullNameInput, workplaceInput, emailInput, interestsInput, personalUrlInput];
+  formInputs.forEach(input => {
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+      }
+    });
+  });
+  
+  // Инициализация пустого списка дополнительных имён
+  const emptyMsgDiv = document.createElement('div');
+  emptyMsgDiv.className = 'empty-names-msg';
+  emptyMsgDiv.innerText = 'Нет добавленных имён. Нажмите «Добавить имя»';
+  namesContainer.appendChild(emptyMsgDiv);
+</script>
+</body>
+</html>
